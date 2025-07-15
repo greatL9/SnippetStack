@@ -1,6 +1,7 @@
 "use client"; // This enables the file as a Client Component in Next.js
 
-import type { Snippet } from "@prisma/client"; // Correct type-only import
+import type { Snippet } from "@/generated/prisma";
+
 import Editor from "@monaco-editor/react";
 import { useState } from "react";
 import * as actions from "@/actions";

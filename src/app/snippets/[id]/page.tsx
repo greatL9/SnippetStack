@@ -2,19 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import * as actions from "@/actions";
-interface SnippetShowPageProps {
-  params: {
-    id: string;
-  };
-}
 
-export default async function SnippetShowPage(props: SnippetShowPageProps) {
-  await new Promise((r) => setTimeout(r, 1000));
+type PageProps = {
+  params: { id: string };
+};
 
-  const snippet = await db.snippet.findFirst({
-    where: {
-      id: parseInt(props.params.id),
-    },
+export default async function SnippetShowPage({ params }: PageProps) {
+  const { id: paramId } = params;
+  const id = parseInt(paramId);
+
+  const snippet = await db.snippet.findUnique({
+    where: { id },
   });
 
   if (!snippet) {
@@ -43,4 +41,11 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
       </pre>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const snippets = await db.snippet.findMany();
+  return snippets.map((snippet) => {
+    return { id: snippet.id.toString() };
+  });
 }
